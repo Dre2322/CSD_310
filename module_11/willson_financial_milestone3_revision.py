@@ -1,4 +1,5 @@
 import mysql.connector
+from datetime import datetime
 
 # Connect to MySQL and use the existing willson_financial database
 db = mysql.connector.connect(
@@ -10,6 +11,9 @@ db = mysql.connector.connect(
 )
 cursor = db.cursor()
 
+# Get the current date and time
+current_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+print(f"\nReport Generated on: {current_datetime}\n")
 
 # Report 1: Number of Clients Added Per Month for the Past Six Months
 query_clients_per_month = """
@@ -24,23 +28,22 @@ GROUP BY
     DATE_FORMAT(DateAdded, '%Y-%m')
 """
 
-# Display the Number of Clients Added Per Month for the Past Six Months
+#Display the Number of Clients Added Per Month for the Past Six Months   
 cursor.execute(query_clients_per_month)
 tables = cursor.fetchall()
 print("-- Number of Clients Added Per Month --")
 for table in tables:
-    print(f"Month: {table[0]}\n NumberofClients: {table[1]}\n")
-
+    print(f"Month: {table[0]}\nNumberofClients: {table[1]}\n")
 
 # Report 2: Average Amount of Assets for the Entire Client List
 query_avg_assets_per_client = """
 SELECT 
-    AVG(Balance) AS AverageAssets 
+    AVG(Balance) AS AverageAssets
 FROM 
     Account
 """
 
-# Display the Average Amount of Assets for the Entire Client List   
+#Display the Average Amount of Assets for the Entire Client List   
 cursor.execute(query_avg_assets_per_client)
 tables = cursor.fetchall()
 print("-- Average Amount of Assets for the Entire Client List --")
@@ -69,7 +72,7 @@ HAVING
     COUNT(T.TransactionID) > 10
 """
 
-# Display Clients with 10 or more Transactions   
+#Display Clients with 10 or more Transactions   
 cursor.execute(query_high_transaction_clients)
 tables = cursor.fetchall()
 print("-- Clients with a High Number of Transactions --")
